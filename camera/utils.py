@@ -2,6 +2,7 @@ import cv2
 import urllib.request
 import numpy as np
 from PIL import Image
+import base64
 
 
 def cvt2RGB(image):
@@ -29,3 +30,9 @@ def grab_image(path=None, stream=None, url=None):
         image = cvt2RGB(image)
     # return the image
     return image
+
+def readb64(uri):
+   encoded_data = uri.split(',')[-1]
+   nparr = np.fromstring(base64.b64decode(encoded_data), np.uint8)
+   img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+   return img
