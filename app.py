@@ -70,6 +70,19 @@ def get_current_webcam_frame():
     response.headers['Content-Type'] = 'image/jpeg'
     return response
 
+class custom_webcam(object):
+    def __del__(self):
+        cv2.destroyAllWindows() 
+
+    def get_frame(self, size=(640, 480)):
+        if current_webcam_frame is None:
+            return None
+        resized = cv2.resize(current_webcam_frame, size, interpolation = cv2.INTER_LINEAR) 
+        frame_flip = cv2.flip(resized,1)
+        # ret, jpg = cv2.imencode('.jpg', frame_flip)
+        return frame_flip
+
+
 @socketio.on('connect')
 def connect_handle():
     # print('connect')
@@ -91,6 +104,9 @@ def stream_handle():
         socketio.emit('stop_stream', to=streamer)
     with lock:
         streamer = request.sid
+    cam = custom_webcam()
+    threading_cam.set_cam(cam)
+    background_thread.set_people_counter(create_people_counter())
     socketio.emit('stream', to=streamer)
 
 @socketio.on('stream')
