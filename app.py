@@ -77,7 +77,8 @@ class custom_webcam(object):
     def get_frame(self, size=(640, 480)):
         if current_webcam_frame is None:
             return None
-        resized = cv2.resize(current_webcam_frame, size, interpolation = cv2.INTER_LINEAR) 
+        img = readb64(current_webcam_frame)
+        resized = cv2.resize(img, size, interpolation = cv2.INTER_LINEAR) 
         frame_flip = cv2.flip(resized,1)
         # ret, jpg = cv2.imencode('.jpg', frame_flip)
         return frame_flip
